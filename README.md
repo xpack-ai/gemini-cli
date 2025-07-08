@@ -149,7 +149,12 @@ gemini
 ![Current Gold Price Image](./docs/assets/xpack/demo-gold-monitor.png)
 
 ### Remove Image Background
-Please use xpack-mcp-server to remove the background from this image (@/docs/assets/xpack/stunning-quality-product.png) .
+Instantly remove the background from any image for clean, professional results.
+
+```bash
+gemini
+> Please use xpack-mcp-server to remove the background from this image (@/docs/assets/xpack/stunning-quality-product.png) .
+```
 ![remove bg origin image](./docs/assets/xpack/stunning-quality-product.png)
 
 ```bash
