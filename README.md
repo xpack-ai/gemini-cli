@@ -1,29 +1,45 @@
-# Gemini CLI
+# Gemini CLI \<> XPack
 
 [![Gemini CLI CI](https://github.com/google-gemini/gemini-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/google-gemini/gemini-cli/actions/workflows/ci.yml)
 
-![Gemini CLI Screenshot](./docs/assets/gemini-screenshot.png)
+![Gemini CLI Screenshot](./docs/assets/xpack/gemini-screenshot.png)
 
-This repository contains the Gemini CLI, a command-line AI workflow tool that connects to your
-tools, understands your code and accelerates your workflows.
+## Introduction
 
-With the Gemini CLI you can:
+This repository showcases the powerful integration of **Gemini CLI** with **XPack.AI**, demonstrating how you can extend the capabilities of your AI agent by connecting to thousands of ready-to-use tools worldwide. Building upon the robust foundation of the [Gemini CLI](https://github.com/google-gemini/gemini-cli), this project provides a practical example of configuring its Model Context Protocol (MCP) service to leverage XPack's extensive service marketplace.
 
-- Query and edit large codebases in and beyond Gemini's 1M token context window.
-- Generate new apps from PDFs or sketches, using Gemini's multimodal capabilities.
-- Automate operational tasks, like querying pull requests or handling complex rebases.
-- Use tools and MCP servers to connect new capabilities, including [media generation with Imagen,
-  Veo or Lyria](https://github.com/GoogleCloudPlatform/vertex-ai-creative-studio/tree/main/experiments/mcp-genmedia)
-- Ground your queries with the [Google Search](https://ai.google.dev/gemini-api/docs/grounding)
-  tool, built in to Gemini.
+## What is Gemini CLI?
+
+[Gemini CLI](https://github.com/google-gemini/gemini-cli) is a command-line AI workflow tool designed to connect to your existing tools, understand your codebase, and accelerate your development workflows. It empowers developers to:
+
+- Query and edit large codebases.
+- Generate new applications from various inputs.
+- Automate operational tasks.
+- Integrate with external capabilities via MCP servers.
+
+## What is XPack\.AI?
+
+[XPack.AI](https://xpack.ai/) is a platform that enables AI agents to connect to a vast ecosystem of global services and tools through a unified Model Context Protocol (MCP). With XPack, you can effortlessly expand your AI agent's functionalities, accessing diverse APIs and services across various domains like finance, logistics, messaging, and more, all in under a minute.
+
+## Gemini CLI + XPack: Bridging AI with Global Services
+
+This project focuses on demonstrating how to configure Gemini CLI to utilize XPack as an MCP server. By doing so, your Gemini CLI instance gains immediate access to XPack's rich collection of tools, allowing you to:
+
+- **Access a diverse range of services:** From financial data to image processing, integrate capabilities that were previously out of reach.
+- **Accelerate development:** Rapidly prototype and build AI-powered solutions by leveraging pre-built tools.
+- **Streamline workflows:** Automate complex tasks by combining Gemini CLI's intelligence with XPack's external service integrations.
 
 ## Quickstart
+
+### Install Gemini CLI
+
+This section outlines the basic setup for Gemini CLI. For detailed instructions on Gemini CLI installation and authentication, please refer to the [official Gemini CLI documentation](https://github.com/google-gemini/gemini-cli).
 
 1. **Prerequisites:** Ensure you have [Node.js version 18](https://nodejs.org/en/download) or higher installed.
 2. **Run the CLI:** Execute the following command in your terminal:
 
    ```bash
-   npx https://github.com/google-gemini/gemini-cli
+   npx https://github.com/xpack-ai/gemini-cli
    ```
 
    Or install it with:
@@ -36,22 +52,43 @@ With the Gemini CLI you can:
 3. **Pick a color theme**
 4. **Authenticate:** When prompted, sign in with your personal Google account. This will grant you up to 60 model requests per minute and 1,000 model requests per day using Gemini.
 
-You are now ready to use the Gemini CLI!
+### Configure XPack MCP
 
-### Use a Gemini API key:
+To connect your Gemini CLI to XPack, you need to configure an MCP server entry in your Gemini CLI settings. This allows Gemini CLI to discover and utilize the tools available through XPack.
 
-The Gemini API provides a free tier with [100 requests per day](https://ai.google.dev/gemini-api/docs/rate-limits#free-tier) using Gemini 2.5 Pro, control over which model you use, and access to higher rate limits (with a paid plan):
+1.  **Obtain your XPack Auth Key:**
+    *   Visit [XPack.AI](https://xpack.ai/) and sign up for an account.
+    *   Generate your Auth key from your XPack dashboard.
 
-1. Generate a key from [Google AI Studio](https://aistudio.google.com/apikey).
-2. Set it as an environment variable in your terminal. Replace `YOUR_API_KEY` with your generated key.
+    ![XPack.ai Dashboard](./docs/assets/xpack/xpack-dashboard.png)
 
-   ```bash
-   export GEMINI_API_KEY="YOUR_API_KEY"
-   ```
 
-3. (Optionally) Upgrade your Gemini API project to a paid plan on the API key page (will automatically unlock [Tier 1 rate limits](https://ai.google.dev/gemini-api/docs/rate-limits#tier-1))
+2.  **Configure Gemini CLI `settings.json`:**
+    * Create or open the `.gemini/settings.json` file in your project's root directory or at the global level (`~/.gemini/settings.json`). 
+    * Add the following `mcpServers` configuration block, replacing **`YOUR_XPACK_AUTH_KEY`** with your actual XPack Auth key:
 
-For other authentication methods, including Google Workspace accounts, see the [authentication](./docs/cli/authentication.md) guide.
+    ```json
+    {
+      "mcpServers": {
+        "xpack-mcp-market": {
+          "type": "sse",
+          "url": "https://api.xpack.ai/v1/mcp?apikey=YOUR_XPACK_AUTH_KEY"
+        }
+      }
+    }
+    ```
+
+
+3.  **Verify Connection:**
+    After configuring, restart your Gemini CLI. You can verify the connection and discovered tools using the `/mcp list` command within the Gemini CLI:
+
+    ```bash
+    /mcp list
+    ```
+
+    You should see `xpack-mcp-market` listed with a `Ready` status and a list of available tools.
+
+    ![Gemini CLI Configure XPack](./docs/assets/xpack/connected_xpack.png)
 
 ## Examples
 
@@ -68,7 +105,7 @@ gemini
 Or work with an existing project:
 
 ```sh
-git clone https://github.com/google-gemini/gemini-cli
+git clone https://github.com/xpack-ai/gemini-cli
 cd gemini-cli
 gemini
 > Give me a summary of all of the changes that went in yesterday
@@ -76,62 +113,51 @@ gemini
 
 ### Next steps
 
+- Explore more [XPack Services](https://xpack.ai/service) to discover additional integration possibilities.
 - Learn how to [contribute to or build from the source](./CONTRIBUTING.md).
 - Explore the available **[CLI Commands](./docs/cli/commands.md)**.
 - If you encounter any issues, review the **[Troubleshooting guide](./docs/troubleshooting.md)**.
 - For more comprehensive documentation, see the [full documentation](./docs/index.md).
-- Take a look at some [popular tasks](#popular-tasks) for more inspiration.
-
 ### Troubleshooting
 
-Head over to the [troubleshooting](docs/troubleshooting.md) guide if you're
-having issues.
+Head over to the [troubleshooting](docs/troubleshooting.md) guide if you're having issues.
 
-## Popular tasks
 
-### Explore a new codebase
+## Popular Tasks
 
-Start by `cd`ing into an existing or newly-cloned repository and running `gemini`.
+This section provides practical examples of how users who prefer a CLI-style workflow can leverage Gemini CLI with XPack as an personal AI assistant for various tasks.
 
-```text
-> Describe the main pieces of this system's architecture.
+### Analyze YouTube comments and provide suggestions to improve video creation
+Easily analyze YouTube video comments to understand audience sentiment and get suggestions for improving your content.
+
+```bash
+gemini
+> Please use xpack-mcp-server to read the comments on this YouTube video: https://www.youtube.com/watch?v=LPZh9BOjkQs, analyze the sentiment of the feedback, and recommend improvements for the video.
 ```
 
-```text
-> What security mechanisms are in place?
+
+![Analyze YouTube comments Image](./docs/assets/xpack/demo-youtube-analysis.png)
+
+### Current Gold Price and Influencing Factors
+Quickly check the latest gold price and discover key factors that may affect future trends.
+
+```bash
+gemini
+> Please use xpack-mcp-server to look up the current real-time price of gold and provide specific factors that may impact its price in the future.
 ```
 
-### Work with your existing code
+![Current Gold Price Image](./docs/assets/xpack/demo-gold-monitor.png)
 
-```text
-> Implement a first draft for GitHub issue #123.
+### Remove Image Background
+Instantly remove the background from any image for clean, professional results.
+![remove bg origin image](./docs/assets/xpack/stunning-quality-product.png)
+
+```bash
+gemini
+> Please remove the background from this image.
 ```
 
-```text
-> Help me migrate this codebase to the latest version of Java. Start with a plan.
-```
-
-### Automate your workflows
-
-Use MCP servers to integrate your local system tools with your enterprise collaboration suite.
-
-```text
-> Make me a slide deck showing the git history from the last 7 days, grouped by feature and team member.
-```
-
-```text
-> Make a full-screen web app for a wall display to show our most interacted-with GitHub issues.
-```
-
-### Interact with your system
-
-```text
-> Convert all the images in this directory to png, and rename them to use dates from the exif data.
-```
-
-```text
-> Organise my PDF invoices by month of expenditure.
-```
+![A yellow handbag with the background removed](./docs/assets/xpack/demo-remove-bg.png)
 
 ### Uninstall
 
